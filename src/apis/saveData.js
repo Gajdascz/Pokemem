@@ -4,7 +4,8 @@ const data = {
   current: localStorage.getItem("save") ?? null,
   subscribers: [],
   sub: (cb) => data.subscribers.push(cb),
-  unsub: (cb) => (data.subscribers = data.subscribers.filter((sub) => sub !== cb)),
+  unsub: (cb) =>
+    (data.subscribers = data.subscribers.filter((sub) => sub !== cb)),
   emit: () => data.subscribers.forEach((sub) => sub(data.current)),
   getSaveStr: () => data.current,
   update: (jsonStr) => {
@@ -36,7 +37,10 @@ const data = {
     });
   },
   getSaveObj: () => {
-    const save = data.current && data.current.length > 0 ? JSON.parse(data.getSaveStr()) : null;
+    const save =
+      data.current && data.current.length > 0
+        ? JSON.parse(data.getSaveStr())
+        : null;
     return {
       settings: {
         bgMusic: (save && save.bgMusic) || false,

@@ -18,5 +18,9 @@ Icon.propTypes = {
 export default function Icon({ type, ...props }) {
   const className = `icon ${props.className ?? ""}`.trim();
   const iconProps = { ...props, className };
-  return <Suspense fallback={<Loading />}>{icons[type] ? React.createElement(icons[type], iconProps) : null}</Suspense>;
+  return (
+    <Suspense fallback={<Loading />}>
+      {icons[type] ? React.createElement(icons[type], iconProps) : null}
+    </Suspense>
+  );
 }

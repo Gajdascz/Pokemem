@@ -11,18 +11,25 @@ GameProvider.propTypes = {
   initialState: PropTypes.object,
 };
 
-export default function GameProvider({ children, initialState = getSaveObj() }) {
+export default function GameProvider({
+  children,
+  initialState = getSaveObj(),
+}) {
   const [bgMusic, setBgMusic] = useState(initialState.settings.bgMusic);
   const [cards, setCards] = useState(initialState.session.cards);
   const [loading, setLoading] = useState(true);
-  const [cardsImported, setCardsImported] = useState(initialState.session.cardsImported);
+  const [cardsImported, setCardsImported] = useState(
+    initialState.session.cardsImported,
+  );
   const [sessionId, setSessionId] = useState(initialState.session.id);
   const [runNumber, setRunNumber] = useState(initialState.session.runNumber);
   const [round, setRound] = useState(initialState.session.round);
   const [score, setScore] = useState(initialState.session.score);
   const [clicked, setClicked] = useState(initialState.session.clicked);
   const [highest, setHighest] = useState(initialState.progress.highest);
-  const [dexEntries, setDexEntries] = useState(initialState.progress.dexEntries);
+  const [dexEntries, setDexEntries] = useState(
+    initialState.progress.dexEntries,
+  );
 
   useEffect(() => {
     if (cardsImported) {
@@ -123,7 +130,10 @@ export default function GameProvider({ children, initialState = getSaveObj() }) 
   };
 
   const onEndRun = () => {
-    setHighest({ ...highest, ...(highest.score < score && { score: score, round: round }) });
+    setHighest({
+      ...highest,
+      ...(highest.score < score && { score: score, round: round }),
+    });
     save(getCurrentGameData());
     startNewRun();
   };

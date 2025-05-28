@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "retro-pixelated";
+  font-family: 'retro-pixelated';
   src:
-    url("../../fonts/retro-pixelated.woff2") format("woff2"),
-    url("../../fonts/retro-pixelated.woff") format("woff");
+    url('./fonts/retro-pixelated/pixelated.woff2') format('woff2'),
+    url('./fonts/retro-pixelated/pixelated.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -40,8 +40,8 @@
 body {
   color: var(--color-symbol);
   fill: var(--color-symbol);
-  font-family: "retro-pixelated";
-  background-image: url("../../app-bg.webp"), url("../../app-bg2.webp");
+  font-family: 'retro-pixelated';
+  background-image: url('./imgs/fantasy0.webp'), url('./imgs/fantasy1.webp');
   background-size: cover;
   background-position: top;
   background-repeat: no-repeat, repeat-y;

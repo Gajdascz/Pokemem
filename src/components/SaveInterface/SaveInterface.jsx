@@ -2,7 +2,14 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useContext } from "react";
 import { GameContext } from "../../contexts/game/GameContext";
 import styles from "./SaveInterface.module.css";
-import { save, importSave, clearSave, getSaveStr, sub, unsub } from "../../apis/saveData";
+import {
+  save,
+  importSave,
+  clearSave,
+  getSaveStr,
+  sub,
+  unsub,
+} from "../../apis/saveData";
 
 SaveInterface.propTypes = {
   className: PropTypes.string,
@@ -33,7 +40,10 @@ export default function SaveInterface({ className }) {
 
   return (
     <div className={`${styles.container}${className && ` ${className}`}`}>
-      <button className={styles.button} onClick={() => save(getCurrentGameData())}>
+      <button
+        className={styles.button}
+        onClick={() => save(getCurrentGameData())}
+      >
         Save
       </button>
 

@@ -24,7 +24,10 @@ export default function Card({ id, name, type, img, size, ...rest }) {
       }}
       {...rest}
     >
-      <div className={styles.cardBody} style={{ backgroundColor: `var(--type-${type})` }}>
+      <div
+        className={styles.cardBody}
+        style={{ backgroundColor: `var(--type-${type})` }}
+      >
         <h3 className={styles.cardName}>{capName}</h3>
         <img src={img} alt={name} className={styles.cardImg} />
       </div>

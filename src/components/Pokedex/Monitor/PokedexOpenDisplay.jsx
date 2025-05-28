@@ -24,7 +24,9 @@ export default function PokedexOpenDisplay({ onClose, closeRef, dexEntries }) {
       <div className={styles.viewingEntries}>
         <p className={styles.viewingFoundText}>
           {dexEntries.found} / {dexEntries.entries.length} (
-          {Math.round((dexEntries.found / dexEntries.entries.length) * 100) / 100}%)
+          {Math.round((dexEntries.found / dexEntries.entries.length) * 100) /
+            100}
+          %)
         </p>
         <div className={styles.viewingEntriesContainer}>
           {dexEntries.entries.map((entry, index) => (

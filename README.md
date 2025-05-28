@@ -4,7 +4,6 @@ Pokémem is a Pokémon-themed card game designed to test your memory. The challe
 
 But be careful! Clicking the same card twice in a round will reset your progress, taking your score and round count back to zero. Your high score is based on the highest submitted score, not the highest reached. You'll have to decide when to end your run to secure your score before the game resets to the beginning.
 
-Developed as part of [The Odin Project curriculum](https://www.theodinproject.com/lessons/node-path-react-new-memory-card), the game showcases my ever-growing expertise and hands-on experience with React principles like hooks, state management, and component-based architecture.
 
 ## Learning Outcomes
 
@@ -101,6 +100,8 @@ CSS has been one of the more challenging aspects of web development for me. As s
 - [**Git**](https://git-scm.com/): Version control and source code management.
 - [**GitHub**](https://github.com/): Remote repository hosting.
 - [**CloudFlare Pages**](https://pages.cloudflare.com/): Hosting live application preview.
+
+_Developed as part of [The Odin Project curriculum](https://www.theodinproject.com/lessons/node-path-react-new-memory-card)_
 
 ## License
 

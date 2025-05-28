@@ -27,7 +27,7 @@ export default function InfoPanel({ headerText, children, className }) {
             aria-label="Toggle background music"
           >
             <Icon type="music" aria-hidden={true} />
-            <BackgroundMusic src="../bg-music-loop.mp3" playing={bgMusic} />
+            <BackgroundMusic src="./audio/bg_music_loop.mp3" playing={bgMusic} />
           </button>
           <Instructions buttonClass={styles.button} />
           <a
@@ -36,7 +36,10 @@ export default function InfoPanel({ headerText, children, className }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button className={styles.button} aria-label="Open Github repository in a new tab">
+            <button
+              className={styles.button}
+              aria-label="Open Github repository in a new tab"
+            >
               <Icon type="gitHub" aria-hidden={true} />
             </button>
           </a>

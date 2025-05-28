@@ -11,7 +11,12 @@ PokedexMonitor.propTypes = {
   dexEntries: PropTypes.object,
 };
 
-export default function PokedexMonitor({ isOpen, onClose, closeRef, dexEntries }) {
+export default function PokedexMonitor({
+  isOpen,
+  onClose,
+  closeRef,
+  dexEntries,
+}) {
   const ViewWrapper = () => (
     <div
       className={`${styles.viewingContainer}`}
