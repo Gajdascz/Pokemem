@@ -1,0 +1,65 @@
+@font-face {
+  font-family: 'retro-pixelated';
+  src:
+    url('/fonts/retro-pixelated/pixelated.woff2') format('woff2'),
+    url('/fonts/retro-pixelated/pixelated.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+:root {
+  --color-symbol: #000000;
+
+  --color-pokemon-yellow: #ffcc00;
+  --color-pokemon-yellow-translucent: #ffcc00aa;
+
+  --color-pokemon-blue: #0a285f;
+  --color-pokemon-blue-translucent: #0a285faa;
+
+  --focus-outline: 3px solid var(--color-symbol);
+
+  --type-normal: #a8a878;
+  --type-fire: #f08030;
+  --type-water: #6890f0;
+  --type-electric: #f8d030;
+  --type-grass: #78c850;
+  --type-ice: #98d8d8;
+  --type-fighting: #c03028;
+  --type-poison: #a040a0;
+  --type-ground: #e0c068;
+  --type-flying: #a890f0;
+  --type-psychic: #f85888;
+  --type-bug: #a8b820;
+  --type-rock: #b8a038;
+  --type-ghost: #705898;
+  --type-dragon: #7038f8;
+  --type-dark: #705848;
+  --type-steel: #b8b8d0;
+  --type-fairy: #ee99ac;
+}
+
+body {
+  color: var(--color-symbol);
+  fill: var(--color-symbol);
+  font-family: 'retro-pixelated';
+  background-image: url('/imgs/fantasy0.webp'), url('/imgs/fantasy1.webp');
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat, repeat-y;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 0.15em;
+  height: fit-content;
+}
+button:focus {
+  outline: var(--focus-outline);
+}
+svg {
+  width: 32px;
+  height: 32px;
+}
