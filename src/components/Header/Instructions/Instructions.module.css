@@ -1,0 +1,65 @@
+.popup {
+  background-color: var(--color-pokemon-blue);
+  border-radius: 10px;
+  border: 5px solid var(--color-pokemon-yellow);
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: baseline;
+  align-items: center;
+  overflow: scroll;
+  max-height: 90vh;
+  max-width: 90vw;
+  color: var(--color-pokemon-yellow);
+  scrollbar-color: var(--color-pokemon-yellow) var(--color-pokemon-blue);
+}
+.tag {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  text-decoration: underline;
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.25em;
+  width: 100%;
+  flex-wrap: wrap-reverse;
+  padding-bottom: 1em;
+}
+
+.popupCloseButton {
+  font-size: 1.75rem;
+  padding: 0.25em;
+  background-color: var(--color-pokemon-blue);
+  color: var(--color-pokemon-yellow);
+  border: 3px solid var(--color-pokemon-yellow);
+}
+
+.popupCloseButton:focus,
+.popupCloseButton:hover {
+  background-color: var(--color-pokemon-yellow);
+  color: var(--color-pokemon-blue);
+  border-color: var(--color-pokemon-blue);
+  box-shadow: 0 0 3px 3px var(--color-pokemon-yellow);
+}
+
+.sectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: 100%;
+}
+
+.section {
+  gap: 1.25em;
+}
+
+.subsectionText {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding-left: 1em;
+}

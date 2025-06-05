@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-weight: bold;
+  margin-top: auto;
+  background-color: var(--color-pokemon-blue-translucent);
+  color: var(--color-pokemon-yellow);
+  fill: var(--color-pokemon-yellow);
+}
+
+.copyright {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copyright.horizontal {
+  flex-direction: row;
+  gap: 0.5em;
+}
+
+.copyrightIconYear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2em;
+}
+.copyrightIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.disclaimer {
+  font-size: 0.5rem;
+  border-top: 1px solid var(--color-pokemon-yellow);
+  text-align: center;
+  padding-top: 0.5em;
+}
+.button {
+  border-radius: 100%;
+}
+.button:hover {
+  background-color: var(--color-pokemon-yellow);
+  color: var(--color-pokemon-blue);
+  border-color: var(--color-pokemon-blue);
+  box-shadow: 0 0 2px 1px var(--color-pokemon-yellow);
+  & > svg {
+    fill: var(--color-pokemon-blue);
+  }
+}

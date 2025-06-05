@@ -2,7 +2,7 @@ import type { UserConfig } from '@commitlint/types';
 
 const Configuration: UserConfig = {
   extends: ['@commitlint/config-conventional'],
-  rules: { 'scope-enum': [2, 'always', ['repo', 'public', 'ui', 'core']] }
+  rules: { 'scope-enum': [2, 'always', ['repo', 'ui', 'context', 'core']] }
 };
 
 export default Configuration;

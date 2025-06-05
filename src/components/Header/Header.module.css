@@ -1,0 +1,82 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  padding: 0.5em;
+  font-size: 0.95rem;
+  background-color: var(--color-pokemon-blue-translucent);
+  color: var(--color-pokemon-yellow);
+}
+.button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+}
+.button {
+  width: 100%;
+  border-radius: 0;
+  border-bottom: 2px solid var(--color-pokemon-yellow);
+}
+
+.button > svg,
+.button.off:hover > svg {
+  fill: var(--color-pokemon-yellow);
+}
+.button:hover > svg {
+  fill: var(--color-pokemon-blue);
+}
+.button:focus {
+  outline: var(--focus-outline);
+}
+
+.button:hover {
+  background-color: var(--color-pokemon-yellow);
+  color: var(--color-pokemon-blue);
+  border-color: var(--color-pokemon-blue);
+  box-shadow: 0 0 3px 3px var(--color-pokemon-yellow);
+}
+.button,
+.on,
+.off:hover {
+  background-color: var(--color-pokemon-blue);
+}
+
+.on:hover,
+.off {
+  background-color: var(--color-pokemon-blue-translucent);
+  border-color: var(--color-pokemon-yellow-translucent);
+  filter: grayscale(1);
+}
+.button.on:hover > svg,
+.button.off > svg {
+  fill: var(--color-pokemon-yellow-translucent);
+}
+.off:hover {
+  border-color: var(--color-pokemon-yellow);
+  filter: none;
+}
+
+.on:hover,
+.off:hover {
+  box-shadow: 0 0 3px 3px var(--color-pokemon-blue);
+}
+
+.menu-toggle-button {
+  padding: 0.5em;
+  border: 2px solid var(--color-pokemon-yellow);
+  background-color: var(--color-pokemon-blue);
+  fill: var(--color-pokemon-yellow);
+  transition:
+    background-color 0.3s ease-in-out,
+    fill 0.3s ease-in-out,
+    border-color 0.3s ease-in-out;
+  &:hover,
+  &.active {
+    background-color: var(--color-pokemon-yellow);
+    fill: var(--color-pokemon-blue);
+    border-color: var(--color-pokemon-blue);
+    box-shadow: 0 0 3px 3px var(--color-pokemon-yellow);
+  }
+}
