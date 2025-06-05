@@ -8,7 +8,7 @@ interface GameProviderProps {
   initialSession?: Session;
 }
 
-export function GameProvider({
+export default function GameProvider({
   children,
   baseCardCount = 2,
   initialSession

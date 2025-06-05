@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'retro-pixelated';
   src:
-    url('/fonts/retro-pixelated/pixelated.woff2') format('woff2'),
-    url('/fonts/retro-pixelated/pixelated.woff') format('woff');
+    url('/fonts/pixelated.woff2') format('woff2'),
+    url('/fonts/pixelated.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

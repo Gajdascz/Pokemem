@@ -1,6 +1,18 @@
 import styles from './Card.module.css';
-import type { PokemonCardProps } from '../../../types';
 import { capitalize } from '../../../core/utils';
+
+interface PokemonCardProps {
+  id: number;
+  name: string;
+  type: string;
+  img: string;
+  onCardClick: (card: {
+    id: number;
+    name: string;
+    img: string;
+    type: string;
+  }) => void;
+}
 export default function Card({
   id,
   name,

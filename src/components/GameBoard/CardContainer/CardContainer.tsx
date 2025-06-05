@@ -1,12 +1,12 @@
 import styles from './CardContainer.module.css';
 import Loading from '../../Shared/Loading/Loading';
 import Card from '../Card/Card';
-import type { PokemonData } from '../../../types';
+import type { PokeApi } from '../../../core/PokeApi';
 
 interface CardsDisplayProps {
   className?: string;
-  onCardClick: (data: PokemonData) => void;
-  cards: PokemonData[];
+  onCardClick: (data: PokeApi.PokemonData) => void;
+  cards: PokeApi.PokemonData[];
   loading: boolean;
   meta?: React.ReactNode;
 }
