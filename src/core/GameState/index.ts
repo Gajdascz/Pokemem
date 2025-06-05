@@ -7,7 +7,7 @@ import {
 } from './Pokedex/Pokedex';
 import { type ScoreState, Score } from './Score/Score';
 import { type CardsState, Cards } from './Cards/Cards';
-import type { PokemonData } from '../../types';
+import type { PokeApi } from '../PokeApi/index';
 
 export type { PokedexEntry, Pokedex } from './Pokedex/Pokedex';
 export interface Session {
@@ -18,7 +18,7 @@ export interface Session {
   cards: CardsState;
 }
 export interface StateConstructorArgs {
-  fetchPokemonData: (count: number) => Promise<PokemonData[]>;
+  fetchPokemonData: (count: number) => Promise<PokeApi.PokemonData[]>;
   maxPokemonId: number;
   baseCardCount?: number;
   initialSession?: Session | null;
