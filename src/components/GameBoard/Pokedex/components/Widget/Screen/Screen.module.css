@@ -1,0 +1,35 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.25em;
+  color: var(--pokedex-text-color);
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  transition:
+    box-shadow var(--pokedex-power-transition),
+    background-color var(--pokedex-power-transition);
+  &.on {
+    background-color: var(--pokedex-on-screen-color);
+    & > .text {
+      opacity: 1;
+    }
+  }
+  &.off {
+    background-color: var(--pokedex-off-screen-color);
+    & > .text {
+      opacity: 0;
+    }
+  }
+}
+.separatorLine {
+  width: 100%;
+  height: 2px;
+  background-color: var(--pokedex-text-color);
+}
+.text {
+  opacity: 0;
+  transition: opacity var(--pokedex-power-transition);
+}

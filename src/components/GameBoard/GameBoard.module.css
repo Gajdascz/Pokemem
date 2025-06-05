@@ -1,0 +1,9 @@
+.metaWrapper {
+  background-color: var(--color-pokemon-blue-translucent);
+  display: flex;
+  width: fit-content;
+  height: max-content;
+  border: 1px solid var(--color-pokemon-yellow);
+  border-radius: 10px;
+  overflow: hidden;
+}

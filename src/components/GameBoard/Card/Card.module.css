@@ -1,0 +1,51 @@
+.card {
+  border-radius: 10px;
+  border-style: solid;
+  border-color: var(--color-pokemon-yellow);
+  background-color: var(--color-pokemon-yellow);
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transition: 0.15s;
+  height: 100%;
+  width: 100%;
+  &:hover {
+    transform: scale(1.01);
+  }
+}
+
+.card:hover,
+.card:focus {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px black;
+}
+.card:focus {
+  outline: var(--focus-outline);
+}
+.cardBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border: 3px solid silver;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cardName {
+  background-color: #ffffffcc;
+  border-bottom: 3px solid silver;
+  font-size: 1rem;
+  font-weight: 650;
+  padding: 0.25em;
+  width: 100%;
+  height: min-content;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  justify-self: baseline;
+}
+.cardImg {
+  height: 100%;
+  object-fit: cover;
+}

@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-pokemon-blue-translucent);
+  color: var(--color-pokemon-yellow);
+  border-bottom-right-radius: 10px;
+  font-size: 0.8rem;
+}
+.sections {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  align-self: start;
+  padding: 0.25em;
+  gap: 2em;
+}
+.section {
+  display: flex;
+  flex-direction: column;
+}
+.sectionHeader {
+  border-bottom: 1px solid var(--color-pokemon-yellow);
+}
+.statWrapper {
+  display: flex;
+  justify-content: space-between;
+}

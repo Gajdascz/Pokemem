@@ -1,0 +1,19 @@
+.pokedexTheme {
+  --pokedex-case-color: red;
+  --pokedex-trim-color: silver;
+  --pokedex-screen-indicator: red;
+  --pokedex-dexter-light-color: blue;
+  --pokedex-low-battery-color: darkred;
+  --pokedex-medium-battery-color: yellow;
+  --pokedex-high-battery-color: green;
+  --pokedex-brightness-indicator: red;
+  --pokedex-indicator-border: 1px solid black;
+  --pokedex-groove-color: black;
+  --pokedex-light-glow-l1: 0 0 0.15em;
+  --pokedex-light-glow-l2: 0 0 0.4em;
+  --pokedex-on-screen-color: #ebebeb;
+  --pokedex-off-screen-color: rgb(40, 40, 40);
+  --pokedex-text-color: black;
+  --pokedex-button-hover-color: #f0f0f0;
+  --pokedex-power-transition: 0.4s ease-in-out;
+}

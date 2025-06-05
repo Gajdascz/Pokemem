@@ -1,0 +1,12 @@
+.case {
+  position: relative;
+  display: grid;
+  grid-template-rows: min-content 1fr;
+  background-color: var(--pokedex-case-color);
+  min-width: 125px;
+  min-height: fit-content;
+  aspect-ratio: 0.8333;
+  padding: 0;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}

@@ -1,0 +1,97 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--pokedex-text-color);
+  background-color: var(--pokedex-on-screen-color);
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  transition:
+    box-shadow var(--pokedex-power-transition),
+    background-color var(--pokedex-power-transition);
+
+  overflow-y: auto;
+}
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  width: 100%;
+  height: 100%;
+  padding-top: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.headContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 5px solid var(--pokedex-trim-color);
+  padding-left: 1em;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+.closeButton {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 25%;
+  border-bottom-left-radius: 25%;
+  align-self: flex-end;
+  top: 2.25em;
+  right: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25em;
+  color: var(--pokedex-text-color);
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: color var(--pokedex-power-transition);
+  background-color: var(--pokedex-trim-color);
+  border: 2px solid var(--pokedex-text-color);
+  transition:
+    color var(--pokedex-power-transition),
+    background-color var(--pokedex-power-transition),
+    border-color var(--pokedex-power-transition);
+  &:hover {
+    color: var(--pokedex-on-screen-color);
+    background-color: var(--pokedex-text-color);
+    border-color: var(--pokedex-case-color);
+  }
+}
+.notFound {
+  font-weight: lighter;
+}
+.found {
+  font-weight: bolder;
+  color: var(--color-pokemon-blue);
+  text-shadow: 0 0 2px var(--color-pokemon-blue-translucent);
+  text-decoration: underline;
+}
+
+.entriesContainer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+}
+
+@media (max-width: 600px) {
+  .headContainer {
+    font-size: 1rem;
+  }
+  .closeButton {
+    font-size: 1.5rem;
+  }
+  .entriesContainer {
+    font-size: 0.7rem;
+    grid-template-columns: 1fr;
+  }
+}

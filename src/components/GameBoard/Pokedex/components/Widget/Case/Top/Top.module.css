@@ -1,0 +1,120 @@
+.top {
+  position: relative;
+  background-color: var(--pokedex-groove-color);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 10px;
+  min-height: 25px;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-items: baseline;
+  justify-items: center;
+  grid-template-columns: min-content 1fr;
+  grid-template-areas: 'lightContainer .';
+  clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 60% 50%, 45% 100%, 0% 100%);
+  z-index: 1;
+}
+.top::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: inherit;
+  background-color: var(--pokedex-case-color);
+  transform: translateY(-0.075em);
+  z-index: -1;
+  border-top-right-radius: 10px;
+}
+.lightContainer {
+  grid-area: lightContainer;
+  display: flex;
+  padding-top: 0.2em;
+  padding-left: 0.2em;
+  padding-bottom: 0.2em;
+  gap: 0.2em;
+  & > div.dexterLight {
+    grid-area: dexterLight;
+    background-color: var(--pokedex-dexter-light-color);
+    border: 0.042em solid var(--pokedex-trim-color);
+    border-radius: 100%;
+    width: 1.25em;
+    height: 1.25em;
+    aspect-ratio: 1;
+    transition: box-shadow var(--pokedex-power-transition);
+    &.active {
+      box-shadow:
+        var(--pokedex-light-glow-l1) var(--pokedex-dexter-light-color),
+        var(--pokedex-light-glow-l2) 0 var(--pokedex-dexter-light-color);
+    }
+  }
+  & > .secondaryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    & > div.batteryIndicatorContainer {
+      grid-area: batteryIndicatorContainer;
+      display: flex;
+      gap: 2px;
+      & > span.batteryIndicator {
+        border-radius: 100%;
+        border: var(--pokedex-indicator-border);
+        width: 0.33em;
+        height: 0.33em;
+        aspect-ratio: 1;
+        transition: box-shadow var(--pokedex-power-transition);
+      }
+      & > span.batteryLow {
+        background-color: var(--pokedex-low-battery-color);
+        &.active {
+          box-shadow:
+            var(--pokedex-light-glow-l1) var(--pokedex-low-battery-color),
+            var(--pokedex-light-glow-l2) var(--pokedex-low-battery-color);
+        }
+      }
+
+      & > span.batteryMedium {
+        background-color: var(--pokedex-medium-battery-color, yellow);
+        &.active {
+          box-shadow:
+            var(--pokedex-light-glow-l1)
+              var(--pokedex-medium-battery-color, yellow),
+            var(--pokedex-light-glow-l2)
+              var(--pokedex-medium-battery-color, yellow);
+        }
+      }
+      & > span.batteryHigh {
+        background-color: var(--pokedex-high-battery-color, green);
+        &.active {
+          box-shadow:
+            var(--pokedex-light-glow-l1)
+              var(--pokedex-high-battery-color, green),
+            var(--pokedex-light-glow-l2)
+              var(--pokedex-high-battery-color, green);
+        }
+      }
+    }
+  }
+}
+
+button.powerButton {
+  margin: 0;
+  appearance: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+  font-size: 0.33em;
+  padding: 0.5em;
+  background-color: var(--pokedex-trim-color);
+  color: var(--pokedex-text-color);
+  transition: background-color 0.2s ease-in-out;
+  &:hover {
+    background-color: var(--pokedex-button-hover-color);
+  }
+  &:focus {
+    outline: 2px solid black;
+  }
+}
