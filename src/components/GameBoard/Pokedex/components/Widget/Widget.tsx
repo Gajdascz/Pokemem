@@ -1,5 +1,5 @@
 import styles from './Widget.module.css';
-import type { PokedexProps } from '../../types';
+import type { PokedexProps } from '../types';
 import Case from './Case/Case';
 import Screen from './Screen/Screen';
 import clsx from 'clsx';

@@ -1,17 +1,13 @@
-export interface NamedAPIResource {
+interface NamedAPIResource {
   name: string;
   url: string;
 }
+export type Form = NamedAPIResource;
 
 export interface Ability {
   is_hidden: boolean;
   slot: number;
   ability: NamedAPIResource | null;
-}
-
-export interface Form {
-  name: string;
-  url: string;
 }
 
 export interface GameIndex {
@@ -102,6 +98,7 @@ export interface PastAbility {
   abilities: Ability[];
 }
 
+/** @endpoint https://pokeapi.co/api/v2/pokemon/{id or name}/ */
 export interface PokemonResponse {
   id: number;
   name: string;
@@ -125,6 +122,10 @@ export interface PokemonResponse {
   past_abilities: PastAbility[];
 }
 
+/**
+ * @see https://pokeapi.co/docs/v2#pokemon-species
+ * @endpoint https://pokeapi.co/api/v2/pokemon-species/{id or name}/
+ */
 export interface SpeciesResponse {
   id: number;
   name: string;
@@ -159,7 +160,7 @@ export interface SpeciesResponse {
   varieties: { is_default: boolean; pokemon: NamedAPIResource }[];
 }
 
-export interface GeneralEndpointResponse {
+export interface APIResourceList {
   count: number;
   next: string | null;
   previous: string | null;

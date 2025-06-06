@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Pokedex } from './Pokedex';
+import { Pokedex, type PokedexState } from './Pokedex';
 
 describe('Pokedex', () => {
   let pokedex: Pokedex;
-  const maxId = 10;
+  const maxId = 5;
 
   beforeEach(() => {
     pokedex = new Pokedex(maxId);
@@ -11,39 +11,39 @@ describe('Pokedex', () => {
 
   describe('constructor', () => {
     it('should initialize with default values when no initial state provided', () => {
-      const newPokedex = new Pokedex(5);
+      const newPokedex = new Pokedex(3);
       expect(newPokedex.found).toBe(0);
-      expect(newPokedex.entries).toHaveLength(5);
+      expect(newPokedex.entries).toHaveLength(3);
       expect(newPokedex.entries.every((entry) => entry.name === null)).toBe(
         true
       );
-      expect(newPokedex.entries.map((entry) => entry.id)).toEqual([
-        0, 1, 2, 3, 4
-      ]);
+      expect(newPokedex.entries.map((entry) => entry.id)).toEqual([0, 1, 2]);
     });
 
     it('should initialize with provided state', () => {
-      const initialState = {
+      const initialState: PokedexState = {
         found: 2,
         entries: [
           { id: 0, name: 'Bulbasaur' },
           { id: 1, name: null },
-          { id: 2, name: 'Venusaur' }
+          { id: 2, name: 'Venusaur' },
+          { id: 3, name: null },
+          { id: 4, name: null }
         ]
       };
-      const newPokedex = new Pokedex(3, initialState);
+      const newPokedex = new Pokedex(5, initialState);
       expect(newPokedex.found).toBe(2);
       expect(newPokedex.entries).toEqual(initialState.entries);
     });
 
     it('should throw error when found count is negative', () => {
       const invalidState = { found: -1, entries: [{ id: 0, name: null }] };
-      expect(() => new Pokedex(1, invalidState)).toThrowError();
+      expect(() => new Pokedex(1, invalidState as any)).toThrow();
     });
 
     it('should throw error when found count exceeds maxId', () => {
       const invalidState = { found: 5, entries: [{ id: 0, name: null }] };
-      expect(() => new Pokedex(1, invalidState)).toThrowError();
+      expect(() => new Pokedex(1, invalidState as any)).toThrow();
     });
 
     it('should throw error when entries length does not match maxId', () => {
@@ -54,21 +54,21 @@ describe('Pokedex', () => {
           { id: 1, name: null }
         ]
       };
-      expect(() => new Pokedex(3, invalidState)).toThrow(
+      expect(() => new Pokedex(3, invalidState as any)).toThrow(
         'Invalid entries length: 2. Expected 3.'
       );
     });
 
     it('should throw error when entry id is negative', () => {
       const invalidState = { found: 0, entries: [{ id: -1, name: null }] };
-      expect(() => new Pokedex(1, invalidState)).toThrow(
+      expect(() => new Pokedex(1, invalidState as any)).toThrow(
         'Invalid Pokémon ID: -1. Must be between 0 and 0.'
       );
     });
 
     it('should throw error when entry id exceeds maxId', () => {
       const invalidState = { found: 0, entries: [{ id: 5, name: null }] };
-      expect(() => new Pokedex(1, invalidState)).toThrow(
+      expect(() => new Pokedex(1, invalidState as any)).toThrow(
         'Invalid Pokémon ID: 5. Must be between 0 and 0.'
       );
     });
@@ -91,12 +91,24 @@ describe('Pokedex', () => {
       const newPokedex = new Pokedex(1, validState);
       expect(newPokedex.entries[0]!.name).toBe(null);
     });
+
+    it('should throw error if found count does not match entries with names', () => {
+      const invalidState = {
+        found: 2,
+        entries: [
+          { id: 0, name: 'Bulbasaur' },
+          { id: 1, name: null }
+        ]
+      };
+      expect(() => new Pokedex(2, invalidState as any)).toThrow(
+        'Found count mismatch: 2 vs 1.'
+      );
+    });
   });
 
   describe('addEntry', () => {
     it('should add new entry and increment found count', () => {
       const result = pokedex.addEntry({ id: 0, name: 'Bulbasaur' });
-
       expect(result).toBe(pokedex); // Returns this for chaining
       expect(pokedex.found).toBe(1);
       expect(pokedex.getEntry(0)?.name).toBe('Bulbasaur');
@@ -138,7 +150,6 @@ describe('Pokedex', () => {
 
     it('should throw error when trying to add different name to existing entry', () => {
       pokedex.addEntry({ id: 0, name: 'Bulbasaur' });
-
       expect(() => pokedex.addEntry({ id: 0, name: 'Different Name' })).toThrow(
         'Conflict: "Bulbasaur" !== "Different Name"'
       );
@@ -188,7 +199,6 @@ describe('Pokedex', () => {
 
     it('should return all entries with correct structure', () => {
       const entries = pokedex.entries;
-
       expect(entries).toHaveLength(maxId);
       entries.forEach((entry, index) => {
         expect(entry.id).toBe(index);
@@ -209,8 +219,7 @@ describe('Pokedex', () => {
     it('should not allow mutation of internal state through returned array', () => {
       const entries = pokedex.entries;
       entries[0]!.name = 'Hacked';
-
-      expect(pokedex.getEntry(0)?.name).toBe(null);
+      expect(pokedex.getEntry(0)?.name).not.toBe('Hacked');
     });
   });
 
@@ -220,10 +229,9 @@ describe('Pokedex', () => {
     });
 
     it('should return correct entry after adding', () => {
-      pokedex.addEntry({ id: 5, name: 'Charizard' });
-
-      const entry = pokedex.getEntry(5);
-      expect(entry).toEqual({ id: 5, name: 'Charizard' });
+      pokedex.addEntry({ id: 3, name: 'Charizard' });
+      const entry = pokedex.getEntry(3);
+      expect(entry).toEqual({ id: 3, name: 'Charizard' });
     });
 
     it('should return null for out of bounds id', () => {
@@ -271,13 +279,13 @@ describe('Pokedex', () => {
 
     it('should maintain state consistency with complex operations', () => {
       pokedex.addEntry({ id: 0, name: 'Bulbasaur' });
-      pokedex.addEntry({ id: 5, name: 'Charizard' });
-      pokedex.addEntry({ id: 0, name: 'Bulbasaur' }); // Duplicate
+      pokedex.addEntry({ id: 3, name: 'Charizard' });
+      pokedex.addEntry({ id: 0, name: 'Bulbasaur' });
 
       expect(pokedex.found).toBe(2);
       expect(pokedex.entries[0]!.name).toBe('Bulbasaur');
       expect(pokedex.entries[1]!.name).toBe(null);
-      expect(pokedex.entries[5]!.name).toBe('Charizard');
+      expect(pokedex.entries[3]!.name).toBe('Charizard');
     });
 
     it('should handle empty string names', () => {

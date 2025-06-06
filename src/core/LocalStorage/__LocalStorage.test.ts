@@ -3,8 +3,9 @@ import * as serializer from './serializer/index';
 import { LocalStorage } from './LocalStorage';
 
 const mockEmitter = {
-  sub: vi.fn(() => ({ id: 'mock-id', unsub: vi.fn() })),
-  pub: vi.fn(),
+  on: vi.fn(() => ({ id: 'mock-id', off: vi.fn() })),
+  off: vi.fn(),
+  emit: vi.fn(),
   clear: vi.fn()
 };
 
@@ -41,8 +42,8 @@ describe('LocalStorage', () => {
     storage.save(data);
 
     expect(serializer.serialize).toHaveBeenCalledWith(data);
-    expect(mockEmitter.pub).toHaveBeenCalledWith('preSave', data);
-    expect(mockEmitter.pub).toHaveBeenCalledWith('postSave', data);
+    expect(mockEmitter.emit).toHaveBeenCalledWith('preSave', data);
+    expect(mockEmitter.emit).toHaveBeenCalledWith('postSave', data);
     expect(localStorage.getItem(key)).toBe(JSON.stringify(data));
   });
 
@@ -123,38 +124,38 @@ describe('LocalStorage', () => {
     const cb = vi.fn();
     storage.on('preSave', cb);
 
-    expect(mockEmitter.sub).toHaveBeenCalledWith('preSave', cb);
+    expect(mockEmitter.on).toHaveBeenCalledWith('preSave', cb);
   });
 
   it('can unsubscribe using ID', () => {
-    const unsub = vi.fn();
-    (mockEmitter.sub as any).mockReturnValue({ id: 'mock-id', unsub });
+    const off = vi.fn();
+    (mockEmitter.on as any).mockReturnValue({ id: 'mock-id', off });
 
     storage.on('postSave', vi.fn());
     storage.off('mock-id');
 
-    expect(unsub).toHaveBeenCalled();
+    expect(off).toHaveBeenCalled();
   });
 
   it('can unsubscribe multiple IDs', () => {
-    const unsub1 = vi.fn();
-    const unsub2 = vi.fn();
-    storage['unsubCbs'].set('id1', unsub1);
-    storage['unsubCbs'].set('id2', unsub2);
+    const off1 = vi.fn();
+    const off2 = vi.fn();
+    storage['unsubCbs'].set('id1', off1);
+    storage['unsubCbs'].set('id2', off2);
 
     storage.off(['id1', 'id2']);
 
-    expect(unsub1).toHaveBeenCalled();
-    expect(unsub2).toHaveBeenCalled();
+    expect(off1).toHaveBeenCalled();
+    expect(off2).toHaveBeenCalled();
   });
 
   it('destroy cleans up mockEmitter and state', () => {
-    const unsub = vi.fn();
-    storage['unsubCbs'].set('id', unsub);
+    const off = vi.fn();
+    storage['unsubCbs'].set('id', off);
 
     storage.destroy();
 
-    expect(unsub).toHaveBeenCalled();
+    expect(off).toHaveBeenCalled();
     expect(mockEmitter.clear).toHaveBeenCalled();
     expect(localStorage.getItem(key)).toBeNull();
     expect(storage.current).toBe(null);

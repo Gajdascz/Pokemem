@@ -10,6 +10,10 @@ import { type CardsState, Cards } from './Cards/Cards';
 import type { PokeApi } from '../PokeApi/index';
 
 export type { PokedexEntry, Pokedex } from './Pokedex/Pokedex';
+
+/**
+ * Represents the full session state for the game.
+ */
 export interface Session {
   meta: MetaState;
   settings: SettingsState;
@@ -17,12 +21,22 @@ export interface Session {
   scores: ScoreState;
   cards: CardsState;
 }
+
+/**
+ * Arguments required to construct a GameState instance.
+ */
 export interface StateConstructorArgs {
   fetchPokemonData: (count: number) => Promise<PokeApi.PokemonData[]>;
   maxPokemonId: number;
   baseCardCount?: number;
   initialSession?: Session | null;
 }
+
+/**
+ * GameState manages the entire game session state, including meta info,
+ * user settings, pokedex progress, scores, and active cards.
+ * Provides mutation batching, session import/export, and state reset logic.
+ */
 export class GameState {
   public readonly maxPokemonId: number;
   public readonly baseCardCount: number;
@@ -34,9 +48,21 @@ export class GameState {
   private _sessionCache: Session;
   private _onMutateComplete?: () => void;
   private _processing = false;
+
+  /**
+   * Optional callback triggered after a mutation and cache update.
+   */
   set onMutateComplete(cb: () => void) {
     this._onMutateComplete = cb;
   }
+
+  /**
+   * Constructs a new GameState instance.
+   * @param fetchPokemonData - Function to fetch Pokémon data for cards.
+   * @param maxPokemonId - The maximum Pokémon ID for the session.
+   * @param baseCardCount - The starting number of cards per round.
+   * @param initialSession - Optional initial session state.
+   */
   constructor({
     fetchPokemonData,
     maxPokemonId,
@@ -61,6 +87,11 @@ export class GameState {
       })
     );
   }
+
+  /**
+   * Schedules a session cache update after mutations.
+   * Uses microtasks to batch updates and trigger the onMutateComplete callback.
+   */
   private updateCache = (() => {
     let scheduled = false;
     return () => {
@@ -77,17 +108,25 @@ export class GameState {
           })
         );
         scheduled = false;
-        this._onMutateComplete?.(); // <-- trigger callback after fresh cache
+        this._onMutateComplete?.(); // Trigger callback after fresh cache
       });
     };
   })();
+
+  /** Internal queue to serialize async mutations. */
   private mutateQueue: Promise<unknown> = Promise.resolve();
+
+  /**
+   * Mutates the state, batching updates and ensuring cache consistency.
+   * Supports both sync and async actions.
+   * @param action - The mutation function to execute.
+   */
   mutate<T>(action: () => T): T;
   mutate<T>(action: () => Promise<T>): Promise<T>;
   mutate<T>(action: () => T | Promise<T>): T | Promise<T> {
     const result = action();
     if (!(result instanceof Promise)) {
-      this.updateCache(); // immediate update
+      this.updateCache(); // Immediate update for sync actions
       return result;
     }
     const next = this.mutateQueue.then(async () => {
@@ -101,12 +140,19 @@ export class GameState {
     return next;
   }
 
+  /** Calculates the number of cards for the next round. */
   get nextCardCount(): number {
     return this.baseCardCount + this._Scores.running.round * 2;
   }
+
+  /** Returns the current session state (frozen, safe for external use). */
   get session(): Session {
     return this._sessionCache;
   }
+
+  /**
+   * Resets all state to a new session and fetches a new set of cards.
+   */
   async renewSession() {
     return this.mutate(async () => {
       this._Meta.reset();
@@ -116,11 +162,20 @@ export class GameState {
       await this._Cards.fetchNewActiveSet(this.baseCardCount);
     });
   }
+
+  /**
+   * Sets the background music setting.
+   * @param state - True to enable, false to disable.
+   */
   setBgMusic(state: boolean) {
     return this.mutate(() => {
       this._Settings.setBgMusic(state);
     });
   }
+
+  /**
+   * Starts a new run: increments run number, resets running score, and fetches new cards.
+   */
   async startNewRun() {
     return this.mutate(async () => {
       this._Meta.incrementRunNumber();
@@ -128,6 +183,12 @@ export class GameState {
       await this._Cards.fetchNewActiveSet(this.baseCardCount);
     });
   }
+
+  /**
+   * Handles a successful card click: marks as clicked, updates score and pokedex,
+   * and advances round or shuffles as needed.
+   * @param param0 - The clicked card's pokedex entry.
+   */
   private async successfulClick({ id, name }: PokedexEntry) {
     return this.mutate(async () => {
       this._Cards.addClicked(id);
@@ -139,6 +200,11 @@ export class GameState {
       } else this._Cards.shuffle();
     });
   }
+
+  /**
+   * Handles a card click event, managing game logic and preventing concurrent clicks.
+   * @param param0 - The clicked card's pokedex entry.
+   */
   async handleCardClick({ id, name }: PokedexEntry) {
     if (this._processing) {
       console.warn('Click ignored, already processing another click.');
@@ -151,6 +217,11 @@ export class GameState {
       this._processing = false;
     });
   }
+
+  /**
+   * Imports a full session state, replacing all sub-states.
+   * @param session - The session to import.
+   */
   import(session: Session) {
     return this.mutate(() => {
       this._Meta.import(session.meta);

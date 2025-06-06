@@ -1,7 +1,7 @@
 import CaseTop from './Top/Top';
 import CaseBody from './Body/Body';
 import styles from './Case.module.css';
-import type { PokedexProps } from '../../../types';
+import type { PokedexProps } from '../../types';
 
 export default function Case({
   children,

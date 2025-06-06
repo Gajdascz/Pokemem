@@ -49,7 +49,7 @@ export default function SaveInterface({
                       const file = e.target.files?.[0];
                       if (file)
                         importSave(file).then(
-                          () => true,
+                          () => setIsOpen(false),
                           (error: unknown) => {
                             if (error instanceof Error) throw error;
                             if (typeof error === 'string')

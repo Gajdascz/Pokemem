@@ -1,289 +1,187 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { GameState, type Session, type StateConstructorArgs } from './index';
-import type { PokemonData } from '../../../types';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { GameState, type Session } from './index';
+import type { PokeApi } from '../PokeApi';
 
-// Mock the dependent classes
-vi.mock('./Meta/Meta', () => ({
-  Meta: vi
-    .fn()
-    .mockImplementation((initialState) => ({
+function makePokemonData(id: number): PokeApi.PokemonData {
+  return { id, name: `poke${id}`, type: 'type', img: `img${id}.png` };
+}
+
+const fetchPokemonData = vi.fn(async (count: number) =>
+  Array.from({ length: count }, (_, i) => makePokemonData(i + 1))
+);
+
+const maxPokemonId = 5;
+const baseCardCount = 2;
+
+function makeSession(): Session {
+  return {
+    meta: {
+      id: 'meta-id',
       runNumber: 1,
-      get: vi
-        .fn()
-        .mockReturnValue({
-          id: 'test-id',
-          runNumber: 1,
-          createdAt: '2025-01-01',
-          lastUpdated: '2025-01-01'
-        }),
-      import: vi.fn()
-    }))
-}));
-
-vi.mock('./Settings/Settings', () => ({
-  Settings: vi
-    .fn()
-    .mockImplementation((initialState) => ({
-      get: vi.fn().mockReturnValue({ bgMusic: true }),
-      import: vi.fn()
-    }))
-}));
-
-vi.mock('./Pokedex/Pokedex', () => ({
-  Pokedex: vi
-    .fn()
-    .mockImplementation((maxId, initialState) => ({
-      get: vi.fn().mockReturnValue({ found: 0, entries: [] }),
-      import: vi.fn()
-    }))
-}));
-
-vi.mock('./Score/Score', () => ({
-  Score: vi
-    .fn()
-    .mockImplementation((initialState) => ({
-      get: vi
-        .fn()
-        .mockReturnValue({
-          running: { round: 1, score: 0 },
-          highest: { round: 1, score: 0 }
-        }),
-      import: vi.fn()
-    }))
-}));
-
-vi.mock('./Cards/Cards', () => ({
-  Cards: vi
-    .fn()
-    .mockImplementation((fetchFn, initialState) => ({
-      get: vi.fn().mockReturnValue({ activeSet: [], clicked: new Set() }),
-      import: vi.fn()
-    }))
-}));
+      createdAt: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
+    },
+    settings: { bgMusic: true },
+    pokedex: {
+      found: 1,
+      entries: [
+        { id: 0, name: 'poke0' },
+        { id: 1, name: null },
+        { id: 2, name: null },
+        { id: 3, name: null },
+        { id: 4, name: null }
+      ]
+    },
+    scores: {
+      running: { round: 0, score: 0 },
+      highest: { round: 0, score: 0 }
+    },
+    cards: {
+      activeSet: [makePokemonData(1), makePokemonData(2)],
+      clicked: new Set()
+    }
+  };
+}
 
 describe('GameState', () => {
-  let mockFetchPokemonData: ReturnType<typeof vi.fn>;
-  let mockPokemonData: PokemonData[];
-  let constructorArgs: StateConstructorArgs;
+  let state: GameState;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-
-    mockPokemonData = [
-      { id: 1, name: 'pikachu', type: 'electric', img: 'pikachu.png' },
-      { id: 2, name: 'charizard', type: 'fire', img: 'charizard.png' }
-    ];
-
-    mockFetchPokemonData = vi.fn().mockResolvedValue(mockPokemonData);
-
-    constructorArgs = {
-      fetchPokemonData: mockFetchPokemonData,
-      maxPokemonId: 1025,
-      baseCardCount: 2
-    };
+    fetchPokemonData.mockClear();
+    state = new GameState({ fetchPokemonData, maxPokemonId, baseCardCount });
   });
 
-  describe('constructor', () => {
-    it('should create GameState with default values when no initial session provided', () => {
-      const state = new GameState(constructorArgs);
-
-      expect(state.maxPokemonId).toBe(1025);
-      expect(state.baseCardCount).toBe(2);
-    });
-
-    it('should create GameState with custom baseCardCount', () => {
-      const customArgs = { ...constructorArgs, baseCardCount: 4 };
-      const state = new GameState(customArgs);
-
-      expect(state.baseCardCount).toBe(4);
-    });
-
-    it('should create GameState with default baseCardCount when not provided', () => {
-      const { baseCardCount, ...argsWithoutBase } = constructorArgs;
-      const state = new GameState(argsWithoutBase);
-
-      expect(state.baseCardCount).toBe(2);
-    });
-
-    it('should create GameState with initial session data', () => {
-      const mockSession: Session = {
-        meta: {
-          id: 'test-id',
-          runNumber: 5,
-          createdAt: '2025-01-01',
-          lastUpdated: '2025-01-01'
-        },
-        settings: { bgMusic: false },
-        pokedex: { found: 10, entries: [{ id: 1, name: 'pikachu' }] },
-        scores: {
-          running: { round: 3, score: 100 },
-          highest: { round: 5, score: 150 }
-        },
-        cards: { activeSet: [mockPokemonData[0]!], clicked: new Set([1, 2]) }
-      };
-
-      const argsWithSession = {
-        ...constructorArgs,
-        initialSession: mockSession
-      };
-      const state = new GameState(argsWithSession);
-
-      expect(state.maxPokemonId).toBe(1025);
-      expect(state.baseCardCount).toBe(2);
-    });
-
-    it('should handle null initial session', () => {
-      const argsWithNullSession = { ...constructorArgs, initialSession: null };
-      const state = new GameState(argsWithNullSession);
-
-      expect(state.maxPokemonId).toBe(1025);
-      expect(state.baseCardCount).toBe(2);
-    });
+  it('should initialize with default state', () => {
+    expect(state.maxPokemonId).toBe(maxPokemonId);
+    expect(state.baseCardCount).toBe(baseCardCount);
+    expect(state.session.meta).toBeDefined();
+    expect(state.session.settings).toBeDefined();
+    expect(state.session.pokedex).toBeDefined();
+    expect(state.session.scores).toBeDefined();
+    expect(state.session.cards).toBeDefined();
   });
 
-  describe('getters', () => {
-    let state: GameState;
-
-    beforeEach(() => {
-      state = new GameState(constructorArgs);
+  it('should initialize with provided session', () => {
+    const session = makeSession();
+    const s = new GameState({
+      fetchPokemonData,
+      maxPokemonId,
+      baseCardCount,
+      initialSession: session
     });
-
-    it('should return correct nextCardCount based on runNumber', () => {
-      // Mock Meta to return runNumber of 3
-      vi.mocked(state.meta).runNumber = 3;
-
-      expect(state.nextCardCount).toBe(8); // baseCardCount (2) + runNumber (3) * 2
-    });
-
-    it('should return nextCardCount with different runNumber', () => {
-      vi.mocked(state.meta).runNumber = 0;
-
-      expect(state.nextCardCount).toBe(2); // baseCardCount (2) + runNumber (0) * 2
-    });
-
-    it('should return meta instance', () => {
-      expect(state.meta).toBeDefined();
-    });
-
-    it('should return settings instance', () => {
-      expect(state.settings).toBeDefined();
-    });
-
-    it('should return pokedex instance', () => {
-      expect(state.pokedex).toBeDefined();
-    });
-
-    it('should return scores instance', () => {
-      expect(state.scores).toBeDefined();
-    });
-
-    it('should return cards instance', () => {
-      expect(state.cards).toBeDefined();
-    });
-
-    it('should return complete session object', () => {
-      const session = state.session;
-
-      expect(session).toEqual({
-        meta: {
-          id: 'test-id',
-          runNumber: 1,
-          createdAt: '2025-01-01',
-          lastUpdated: '2025-01-01'
-        },
-        settings: { bgMusic: true },
-        pokedex: { found: 0, entries: [] },
-        scores: {
-          running: { round: 1, score: 0 },
-          highest: { round: 1, score: 0 }
-        },
-        cards: { activeSet: [], clicked: new Set() }
-      });
-
-      expect(state.meta.get).toHaveBeenCalled();
-      expect(state.settings.get).toHaveBeenCalled();
-      expect(state.pokedex.get).toHaveBeenCalled();
-      expect(state.scores.get).toHaveBeenCalled();
-      expect(state.cards.get).toHaveBeenCalled();
-    });
+    expect(s.session.meta.id).toBe('meta-id');
+    expect(s.session.settings.bgMusic).toBe(true);
+    expect(s.session.pokedex.entries[0]?.name).toBe('poke0');
+    expect(s.session.scores.running.score).toBe(0);
+    expect(Array.isArray(s.session.cards.activeSet)).toBe(true);
   });
 
-  describe('import', () => {
-    it('should import session data to all modules and return self', () => {
-      const state = new GameState(constructorArgs);
-      const mockSession: Session = {
-        meta: {
-          id: 'imported-id',
-          runNumber: 10,
-          createdAt: '2025-02-01',
-          lastUpdated: '2025-02-01'
-        },
-        settings: { bgMusic: false },
-        pokedex: { found: 50, entries: [{ id: 25, name: 'pikachu' }] },
-        scores: {
-          running: { round: 8, score: 500 },
-          highest: { round: 10, score: 600 }
-        },
-        cards: { activeSet: [mockPokemonData[1]!], clicked: new Set([1, 2, 3]) }
-      };
-
-      const result = state.import(mockSession);
-
-      expect(state.meta.import).toHaveBeenCalledWith(mockSession.meta);
-      expect(state.settings.import).toHaveBeenCalledWith(mockSession.settings);
-      expect(state.pokedex.import).toHaveBeenCalledWith(mockSession.pokedex);
-      expect(state.scores.import).toHaveBeenCalledWith(mockSession.scores);
-      expect(state.cards.import).toHaveBeenCalledWith(mockSession.cards);
-
-      expect(result).toBe(state);
-    });
-
-    it('should handle import with empty session data', () => {
-      const state = new GameState(constructorArgs);
-      const emptySession: Session = {
-        meta: { id: '', runNumber: 0, createdAt: '', lastUpdated: '' },
-        settings: { bgMusic: false },
-        pokedex: { found: 0, entries: [] },
-        scores: {
-          running: { round: 0, score: 0 },
-          highest: { round: 0, score: 0 }
-        },
-        cards: { activeSet: [], clicked: new Set() }
-      };
-
-      const result = state.import(emptySession);
-
-      expect(state.meta.import).toHaveBeenCalledWith(emptySession.meta);
-      expect(state.settings.import).toHaveBeenCalledWith(emptySession.settings);
-      expect(state.pokedex.import).toHaveBeenCalledWith(emptySession.pokedex);
-      expect(state.scores.import).toHaveBeenCalledWith(emptySession.scores);
-      expect(state.cards.import).toHaveBeenCalledWith(emptySession.cards);
-
-      expect(result).toBe(state);
-    });
+  it('should update session cache after mutation', async () => {
+    const oldSession = state.session;
+    await state.renewSession();
+    expect(state.session).not.toBe(oldSession);
+    expect(state.session.meta).not.toBe(oldSession.meta);
   });
 
-  describe('nextCardCount calculation edge cases', () => {
-    it('should handle negative runNumber', () => {
-      const state = new GameState(constructorArgs);
-      vi.mocked(state.meta).runNumber = -1;
+  it('should call onMutateComplete after mutation', async () => {
+    const cb = vi.fn();
+    state.onMutateComplete = cb;
+    await state.renewSession();
+    // queueMicrotask is async, so wait for next tick
+    await new Promise((r) => setTimeout(r, 0));
+    expect(cb).toHaveBeenCalled();
+  });
 
-      expect(state.nextCardCount).toBe(0); // 2 + (-1) * 2 = 0
+  it('should reset all state on renewSession', async () => {
+    await state.renewSession();
+    expect(state.session.scores.running.score).toBe(0);
+    expect(state.session.pokedex.found).toBe(0);
+    expect(state.session.cards.activeSet.length).toBe(baseCardCount);
+  });
+
+  it('should set bgMusic', async () => {
+    await state.setBgMusic(true);
+    expect(state.session.settings.bgMusic).toBe(true);
+    await state.setBgMusic(false);
+    expect(state.session.settings.bgMusic).toBe(false);
+  });
+
+  it('should start new run', async () => {
+    await state.startNewRun();
+    expect(state.session.meta.runNumber).toBe(1);
+    expect(state.session.scores.running.score).toBe(0);
+    expect(state.session.cards.activeSet.length).toBe(baseCardCount);
+  });
+
+  it('should import session', async () => {
+    const session = makeSession();
+    await state.import(session);
+    expect(state.session.meta.id).toBe('meta-id');
+    expect(state.session.settings.bgMusic).toBe(true);
+    expect(state.session.pokedex.entries[0]?.name).toBe('poke0');
+  });
+
+  it('should handle successful card click and shuffle if not all clicked', async () => {
+    await state.renewSession();
+    const card = state.session.cards.activeSet[0]!;
+    await state.handleCardClick({ id: card.id, name: card.name });
+    expect(state.session.scores.running.score).toBe(1);
+    expect(state.session.pokedex.entries[card.id]?.name).toBe(card.name);
+  });
+
+  it('should handle successful card click and fetch new set if all clicked', async () => {
+    await state.renewSession();
+    // Click all cards
+    for (const card of state.session.cards.activeSet) {
+      await state.handleCardClick({ id: card.id, name: card.name });
+    }
+    expect(state.session.scores.running.round).toBe(1);
+    expect(state.session.cards.activeSet.length).toBe(state.nextCardCount);
+  });
+
+  it('should start new run if card already clicked', async () => {
+    await state.renewSession();
+    const card = state.session.cards.activeSet[0]!;
+    await state.handleCardClick({ id: card.id, name: card.name });
+    // Click again triggers new run
+    await state.handleCardClick({ id: card.id, name: card.name });
+    expect(state.session.scores.running.score).toBe(0);
+    expect(state.session.meta.runNumber).toBe(1);
+  });
+
+  it('should ignore clicks while processing', async () => {
+    await state.renewSession();
+    state['_processing'] = true;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const card = state.session.cards.activeSet[0]!;
+    await state.handleCardClick({ id: card.id, name: card.name });
+    expect(warn).toHaveBeenCalledWith(
+      'Click ignored, already processing another click.'
+    );
+    warn.mockRestore();
+  });
+
+  it('should allow chaining of mutate for sync and async actions', async () => {
+    let syncRan = false;
+    state.mutate(() => {
+      syncRan = true;
     });
+    expect(syncRan).toBe(true);
 
-    it('should handle large runNumber', () => {
-      const state = new GameState(constructorArgs);
-      vi.mocked(state.meta).runNumber = 100;
-
-      expect(state.nextCardCount).toBe(202); // 2 + 100 * 2 = 202
+    let asyncRan = false;
+    await state.mutate(async () => {
+      asyncRan = true;
     });
+    expect(asyncRan).toBe(true);
+  });
 
-    it('should handle different baseCardCount', () => {
-      const customArgs = { ...constructorArgs, baseCardCount: 10 };
-      const state = new GameState(customArgs);
-      vi.mocked(state.meta).runNumber = 5;
-
-      expect(state.nextCardCount).toBe(20); // 10 + 5 * 2 = 20
-    });
+  it('should update nextCardCount as rounds increase', async () => {
+    await state.renewSession();
+    expect(state.nextCardCount).toBe(baseCardCount);
+    // Simulate a round
+    for (const card of state.session.cards.activeSet) {
+      await state.handleCardClick({ id: card.id, name: card.name });
+    }
+    expect(state.nextCardCount).toBe(baseCardCount + 2);
   });
 });

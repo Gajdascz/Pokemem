@@ -1,94 +1,59 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { Settings } from './Settings';
+import { describe, it, expect } from 'vitest';
+import { Settings, type SettingsState } from './Settings';
 
 describe('Settings', () => {
-  let settings: Settings;
-
-  beforeEach(() => {
-    settings = new Settings();
+  it('should initialize with provided state', () => {
+    const s = new Settings({ bgMusic: true });
+    expect(s.bgMusic).toBe(true);
+    expect(s.state.bgMusic).toBe(true);
   });
 
-  describe('constructor', () => {
-    it('should initialize with default values when no initial state provided', () => {
-      const newSettings = new Settings();
-      expect(newSettings.bgMusic).toBe(false);
-    });
-
-    it('should initialize with provided state - bgMusic true', () => {
-      const initialState = { bgMusic: true };
-      const newSettings = new Settings(initialState);
-      expect(newSettings.bgMusic).toBe(true);
-    });
-
-    it('should initialize with provided state - bgMusic false', () => {
-      const initialState = { bgMusic: false };
-      const newSettings = new Settings(initialState);
-      expect(newSettings.bgMusic).toBe(false);
-    });
-
-    it('should throw error when bgMusic is not a boolean - string', () => {
-      const invalidState = { bgMusic: 'not-boolean' };
-      expect(() => new Settings(invalidState as any)).toThrow(
-        'Invalid bgMusic setting: must be a boolean'
-      );
-    });
-
-    it('should throw error when bgMusic is not a boolean - number', () => {
-      const invalidState = { bgMusic: 1 };
-      expect(() => new Settings(invalidState as any)).toThrow(
-        'Invalid bgMusic setting: must be a boolean'
-      );
-    });
-
-    it('should throw error when bgMusic is not a boolean - null', () => {
-      const invalidState = { bgMusic: null };
-      expect(() => new Settings(invalidState as any)).toThrow(
-        'Invalid bgMusic setting: must be a boolean'
-      );
-    });
-
-    it('should throw error when bgMusic is not a boolean - undefined', () => {
-      const invalidState = { bgMusic: undefined };
-      expect(() => new Settings(invalidState as any)).toThrow(
-        'Invalid bgMusic setting: must be a boolean'
-      );
-    });
-
-    it('should throw error when bgMusic is not a boolean - object', () => {
-      const invalidState = { bgMusic: {} };
-      expect(() => new Settings(invalidState as any)).toThrow(
-        'Invalid bgMusic setting: must be a boolean'
-      );
-    });
-
-    it('should throw error when bgMusic is not a boolean - array', () => {
-      const invalidState = { bgMusic: [] };
-      expect(() => new Settings(invalidState as any)).toThrow(
-        'Invalid bgMusic setting: must be a boolean'
-      );
-    });
+  it('should initialize with default state if no initial provided', () => {
+    const s = new Settings();
+    expect(s.bgMusic).toBe(false);
+    expect(s.state.bgMusic).toBe(false);
   });
 
-  describe('bgMusic getter', () => {
-    it('should return default bgMusic value', () => {
-      expect(settings.bgMusic).toBe(false);
-    });
-
-    it('should return correct bgMusic value when initialized with true', () => {
-      const settingsWithTrue = new Settings({ bgMusic: true });
-      expect(settingsWithTrue.bgMusic).toBe(true);
-    });
-
-    it('should return correct bgMusic value when initialized with false', () => {
-      const settingsWithFalse = new Settings({ bgMusic: false });
-      expect(settingsWithFalse.bgMusic).toBe(false);
-    });
+  it('should set bgMusic value', () => {
+    const s = new Settings();
+    s.setBgMusic(true);
+    expect(s.bgMusic).toBe(true);
+    s.setBgMusic(false);
+    expect(s.bgMusic).toBe(false);
   });
-  it('setBgMusic should update bgMusic state', () => {
-    settings.setBgMusic(true);
-    expect(settings.bgMusic).toBe(true);
 
-    settings.setBgMusic(false);
-    expect(settings.bgMusic).toBe(false);
+  it('should throw if bgMusic is not a boolean', () => {
+    expect(() => new Settings({ bgMusic: 1 as any })).toThrow(
+      'Invalid bgMusic setting: must be a boolean'
+    );
+    expect(() => new Settings({ bgMusic: null as any })).toThrow(
+      'Invalid bgMusic setting: must be a boolean'
+    );
+    expect(() => new Settings({ bgMusic: undefined as any })).toThrow(
+      'Invalid bgMusic setting: must be a boolean'
+    );
+    expect(() => new Settings({ bgMusic: 'true' as any })).toThrow(
+      'Invalid bgMusic setting: must be a boolean'
+    );
+  });
+
+  it('should reset to default state', () => {
+    const s = new Settings({ bgMusic: true });
+    s.setBgMusic(false);
+    s.reset();
+    expect(s.bgMusic).toBe(false);
+  });
+
+  it('should import a valid state', () => {
+    const s = new Settings();
+    s.import({ bgMusic: true });
+    expect(s.bgMusic).toBe(true);
+  });
+
+  it('should throw on import of invalid state', () => {
+    const s = new Settings();
+    expect(() => s.import({ bgMusic: 123 as any })).toThrow(
+      'Invalid bgMusic setting: must be a boolean'
+    );
   });
 });

@@ -8,11 +8,17 @@ interface GameProviderProps {
   initialSession?: Session;
 }
 
+/**
+ * GameProvider sets up and provides the game controller and session state
+ * to the React context for use throughout the app.
+ * Handles controller lifecycle, session sync, and loading state.
+ */
 export default function GameProvider({
   children,
   baseCardCount = 2,
   initialSession
 }: GameProviderProps) {
+  // Persist the GameController instance across renders.
   const controllerRef = useRef<GameController>(null);
   controllerRef.current ??= new GameController({
     baseCardCount,
@@ -21,12 +27,16 @@ export default function GameProvider({
 
   const controller = controllerRef.current;
 
+  // Local state for loading indicator and session snapshot.
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<Session>(controller.session);
 
   useEffect(() => {
+    // Save session on page unload.
     const saveOnUnload = () => controller.save();
     window.addEventListener('beforeunload', saveOnUnload);
+
+    // Subscribe to loading events and session sync.
     const startedLoadingSub = controller.onLoading('startedLoading', () =>
       setLoading(true)
     );
@@ -34,6 +44,8 @@ export default function GameProvider({
       setLoading(false)
     );
     const syncSub = controller.onSync(setSession);
+
+    // If no cards are loaded, start a new run.
     if (!(controller.session.cards.activeSet.length > 0))
       controller
         .startNewRun()
@@ -49,6 +61,8 @@ export default function GameProvider({
           }
           setLoading(false);
         });
+
+    // Cleanup subscriptions and event listeners on unmount.
     return () => {
       window.removeEventListener('beforeunload', saveOnUnload);
       startedLoadingSub.off();
@@ -56,6 +70,8 @@ export default function GameProvider({
       syncSub.off();
     };
   }, []);
+
+  // Memoize the context value to avoid unnecessary re-renders.
   const context = useMemo(
     () => ({
       loading,
@@ -70,6 +86,7 @@ export default function GameProvider({
     }),
     [loading, session]
   );
+
   return (
     <GameContext.Provider value={context}>{children}</GameContext.Provider>
   );

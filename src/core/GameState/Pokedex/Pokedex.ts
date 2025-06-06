@@ -1,23 +1,46 @@
 import { Base } from '../Base';
 
+/**
+ * Represents a single Pokédex entry.
+ * - id: The Pokémon's unique identifier.
+ * - name: The Pokémon's name, or null if not yet discovered.
+ */
 export interface PokedexEntry {
   id: number;
   name: string | null;
 }
+
+/**
+ * State shape for the Pokédex.
+ * - found: Number of Pokémon discovered.
+ * - entries: Array of Pokédex entries.
+ */
 export interface PokedexState {
   found: number;
   entries: PokedexEntry[];
 }
+
+/**
+ * Pokedex class manages the state and logic for tracking discovered Pokémon.
+ * Handles validation, adding entries, and querying the Pokédex.
+ */
 export class Pokedex extends Base<PokedexState> {
+  /**
+   * Constructs a new Pokedex instance.
+   * @param maxId - The maximum number of Pokémon (size of the Pokédex).
+   * @param initial - Optional initial Pokédex state.
+   */
   constructor(
     public readonly maxId: number,
     initial?: PokedexState
   ) {
     super(
+      // Returns a new default Pokédex state.
       (): PokedexState => ({
         entries: Array.from({ length: maxId }, (_, id) => ({ id, name: null })),
         found: 0
       }),
+      // Validates the Pokédex state shape and values.
       (pokedex: PokedexState) => {
         if (pokedex.found < 0 || pokedex.found > maxId)
           throw new Error(
@@ -49,6 +72,13 @@ export class Pokedex extends Base<PokedexState> {
       initial
     );
   }
+
+  /**
+   * Adds a new entry to the Pokédex.
+   * Throws if the entry already exists with a different name.
+   * @param entry - The Pokédex entry to add.
+   * @returns The Pokedex instance for chaining.
+   */
   addEntry(entry: PokedexEntry) {
     const { id, name } = entry;
     if (id < 0 || id >= this.state.entries.length)
@@ -66,12 +96,21 @@ export class Pokedex extends Base<PokedexState> {
     return this;
   }
 
+  /** Returns the number of Pokémon found. */
   get found() {
     return this.state.found;
   }
+
+  /** Returns a shallow copy of all Pokédex entries. */
   get entries() {
     return this.state.entries.map((entry) => ({ ...entry }));
   }
+
+  /**
+   * Returns a specific Pokédex entry by ID, or null if not found.
+   * @param id - The Pokémon ID.
+   * @returns The Pokédex entry or null.
+   */
   getEntry(id: number): PokedexEntry | null {
     const entry = this.state.entries[id];
     return entry ?? null;

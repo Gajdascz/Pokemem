@@ -12,7 +12,7 @@ export default defineConfig({
   root: SRC,
   plugins: [react(), tsConfigPaths(), svgr()],
   publicDir: path.resolve(ROOT, 'public'),
-  build: { outDir: BUILD, emptyOutDir: true },
+  build: { outDir: BUILD, emptyOutDir: true, target: 'es2022' },
   base: '/Pokemem/',
   cacheDir: CACHE,
   envDir: ROOT,

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { PokedexProps } from '../../../types';
+import type { PokedexProps } from '../../types';
 import styles from './Screen.module.css';
 export default function Screen({ entries, found, isOn }: PokedexProps) {
   return (
