@@ -5,7 +5,7 @@
 
 ![Pokémem gameplay screenshot](./.github/imgs/main.png)
 
-## 🔗 [**Play Now**](https://gajdacsz.github.io/Pokemem)
+## 🔗 [**Play Now**](https://gajdascz.github.io/Pokemem/)
 
 ## 🎮 Gameplay
 
