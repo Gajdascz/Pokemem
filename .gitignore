@@ -1,0 +1,14 @@
+**/node_modules
+**/build
+**/dist
+**/coverage
+**/.coverage
+**/.cache
+**/*.tsbuildinfo
+**/docs/architecture/**/*
+**/package-lock.json
+.pnpm-store
+*.log
+.env
+.env.*
+.react-router
